@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class JournalServiceImpl implements JournalService{
 
-    private JournalEntryRepository journalEntryRepository;
+    private final JournalEntryRepository journalEntryRepository;
 
     @Autowired
     public JournalServiceImpl(JournalEntryRepository journalEntryRepository) {
@@ -28,13 +28,25 @@ public class JournalServiceImpl implements JournalService{
     }
 
     @Override
-    public void updateJournalEntry(JournalEntry journalEntry) {
-        journalEntryRepository.save(journalEntry);
+    public JournalEntry updateJournalEntry(JournalEntry journalEntry) {
+        return journalEntryRepository.save(journalEntry);
     }
 
     @Override
     public void createJournalEntry(JournalEntry journalEntry) {
         journalEntryRepository.save(journalEntry);
+    }
+
+    @Override
+    public List<JournalEntry> getJournalEntries(String userId) {
+        return journalEntryRepository.findByUserId(userId);
+    }
+
+    @Override
+    public JournalEntry getJournalEntry(String userId, String time) {
+        return journalEntryRepository.findByUserIdAndTime(userId, time).stream()
+                .findFirst()
+                .orElse(null);
     }
 
 }

@@ -5,11 +5,16 @@ import java.util.List;
 
 public interface JournalService {
 
-    public List<JournalEntry> getJournalEntries();
+    List<JournalEntry> getJournalEntries();
 
-    public JournalEntry getJournalEntryById(String id);
+    JournalEntry getJournalEntryById(String id);
 
-    public void updateJournalEntry(JournalEntry journalEntry);
+    JournalEntry updateJournalEntry(JournalEntry journalEntry);
 
-    public void createJournalEntry(JournalEntry journalEntry);
+    void createJournalEntry(JournalEntry journalEntry);
+
+    List<JournalEntry> getJournalEntries(String userId);
+
+    JournalEntry getJournalEntry(String userId, String time);
+
 }
