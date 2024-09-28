@@ -1,6 +1,7 @@
 package com.hackathon.Journail.Controller;
 
 
+import com.hackathon.Journail.BO.PromptBO;
 import com.hackathon.Journail.Model.JournalEntry;
 import com.hackathon.Journail.Service.JournalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,13 @@ import java.util.List;
 public class JournalEndpoint {
 
     private final JournalService journalService;
+    private final PromptBO promptBO;
     private HttpHeaders headers = new HttpHeaders();
 
     @Autowired
-    public JournalEndpoint(JournalService journalService) {
+    public JournalEndpoint(JournalService journalService, PromptBO promptBO) {
         this.journalService = journalService;
+        this.promptBO = promptBO;
         headers.add("Access-Control-Allow-Origin", "*");
     }
 
