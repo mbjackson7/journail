@@ -74,8 +74,37 @@ public class JournalEndpoint {
         return ResponseEntity.status(HttpStatus.OK).body(journalEntries);
     }
 
+    @PostMapping("/start-conversation")
+    public ResponseEntity<String> startConversation(@RequestBody JournalDTO journalDTO) {
+        if (journalDTO.getUserId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing userId");
+        } else if (journalDTO.getTime() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing time");
+        }
+
+        JournalEntry journalEntry = new JournalEntry();
+        journalEntry.setUserId(journalDTO.getUserId());
+        journalEntry.setTime(journalDTO.getTime());
+        journalService.createJournalEntry(journalEntry);
+        //TODO: Service call to get starter question
+
+        return ResponseEntity.status(HttpStatus.OK).body("How was your day?");
+
+    }
+
     @PostMapping("/send-message")
     public ResponseEntity<?> sendMessage(@RequestBody JournalDTO journalDTO) {
+        JournalEntry existingEntry = journalService.getJournalEntry(journalDTO.getUserId(), journalDTO.getTime());
+        if (existingEntry == null) {
+            // Create new entry
+            JournalEntry journalEntry = new JournalEntry();
+            journalEntry.setUserId(journalDTO.getUserId());
+            journalEntry.setTime(journalDTO.getTime());
+            journalService.createJournalEntry(journalEntry);
+
+        } else {
+
+        }
         //CALL INTO BO LOGIC HERE
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
