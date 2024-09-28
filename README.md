@@ -1,4 +1,4 @@
-# hackmidwest2024# Welcome to Hack Midwest 2024!
+# Welcome to Hack Midwest 2024!
 <br /><br />
 
 
