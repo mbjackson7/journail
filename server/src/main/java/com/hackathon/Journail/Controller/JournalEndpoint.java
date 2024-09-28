@@ -4,6 +4,7 @@ package com.hackathon.Journail.Controller;
 import com.hackathon.Journail.Model.JournalEntry;
 import com.hackathon.Journail.Service.JournalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +16,12 @@ import java.util.List;
 public class JournalEndpoint {
 
     private final JournalService journalService;
+    private HttpHeaders headers = new HttpHeaders();
 
     @Autowired
     public JournalEndpoint(JournalService journalService) {
         this.journalService = journalService;
+        headers.add("Access-Control-Allow-Origin", "*");
     }
 
     @GetMapping()
