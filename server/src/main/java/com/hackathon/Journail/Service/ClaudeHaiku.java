@@ -1,5 +1,6 @@
 package com.hackathon.Journail.Service;
 
+import org.springframework.beans.factory.annotation.Value;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.exception.SdkClientException;
@@ -12,18 +13,17 @@ import software.amazon.awssdk.services.bedrockruntime.model.Message;
 
 public class ClaudeHaiku {
     private final static Region region = Region.US_EAST_1;
-    final private StaticCredentialsProvider staticCredentialsProvider;
 
-    public ClaudeHaiku() {
-        String AwsAccessKeyId = System.getenv("AWS_ACCESS_KEY_ID");
-        String AwsSecretAccessKey = System.getenv("AWS_SECRET_ACCESS_KEY");
+    @Value("${access.key.id}")
+    private String AwsAccessKeyId;
 
-        AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(AwsAccessKeyId, AwsSecretAccessKey);
-        this.staticCredentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
-    }
+    @Value("${secret.access.key}")
+    private String AwsSecretAccessKey;
 
     public String converse(String inputText) {
-        BedrockRuntimeClient bedrockRuntimeClient = BedrockRuntimeClient.builder().credentialsProvider(this.staticCredentialsProvider).region(region).build();
+        AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(AwsAccessKeyId, AwsSecretAccessKey);
+        StaticCredentialsProvider staticCredentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
+        BedrockRuntimeClient bedrockRuntimeClient = BedrockRuntimeClient.builder().credentialsProvider(staticCredentialsProvider).region(region).build();
 
         String modelId = "anthropic.claude-3-haiku-20240307-v1:0";
 
