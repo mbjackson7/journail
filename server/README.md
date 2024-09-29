@@ -16,7 +16,7 @@ Ensure you have reviewed the [Rules & FAQ](https://hackmidwest.com/#faq)
 
 1.   Morgan Jackson  || morgan.b.jackson@accenture.com || mbjackson7
 2.   Drew Huniak     || drew.huniak@nisc.coop || DrewHuniak
-3.   Michael French  ||  || frenchytheasian
+3.   Michael French  || mfrench@bensonhill.com || frenchytheasian
 4.   Cody Schaefer   || cody.schaefer@nisc.coop || CodyScha
 5.   Scott Delozier  || scott.delozier@mastercard.com || sdelozi
 
