@@ -2,6 +2,7 @@ package com.hackathon.Journail.BO;
 
 import com.hackathon.Journail.Model.JournalEntry;
 import com.hackathon.Journail.Service.ClaudeHaiku;
+import com.hackathon.Journail.Service.JournalServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,18 +19,25 @@ public class PromptBO {
 
     private final ClaudeHaiku claudeHaiku;
 
+    private final JournalServiceImpl journalService;
+
     @Autowired
-    PromptBO(ClaudeHaiku claudeHaiku) {
+    PromptBO(ClaudeHaiku claudeHaiku, JournalServiceImpl journalService) {
         this.claudeHaiku = claudeHaiku;
+        this.journalService = journalService;
     }
 
     public String getStarterQuestion(JournalEntry journalEntry) {
         List<String> defaultOpeners = getSampleQuestions("sampleopeners.txt");
 
+        String context = buildConext(journalService.getJournalEntries());
+
         //prompt bedrock for opener based on context and random default opener here
         String defaultStarterQuestion = getRandomQuestion(defaultOpeners);
         String starterPrompt =
-                "Give a similar question to the question that is listed in the prompt, without revealing that you are replying to me. Just give me a similar question only. " +
+                "Here is some previous context of past conversations. I want you to include this context when relevant in the following conversation we are going to have. " +
+                        context + "\n\n" +
+                        "Give a similar question to the question that is listed in the following prompt, without revealing that you are replying to me. Just give me a similar question only. " +
                         "Do not say anything like \"Here's a similar question:\" Just give me the question only. Only one question.\n\n" +
                         "Question:" + defaultStarterQuestion;
 
@@ -65,6 +73,16 @@ public class PromptBO {
         int index = random.nextInt(defaultQuestions.size());
 
         return defaultQuestions.get(index);
+    }
+
+    private String buildConext(List<JournalEntry> journalEntries) {
+        StringBuilder sb = new StringBuilder();
+
+        for (JournalEntry journalEntry : journalEntries) {
+            sb.append(journalEntry.getConversation()).append("\n\n");
+        }
+
+        return sb.toString();
     }
 
 }
