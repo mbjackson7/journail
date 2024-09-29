@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/embed")
 public class PineconeController {
 
     private final PineconeBo pineconeBo;
