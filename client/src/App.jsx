@@ -6,42 +6,36 @@ import EntriesList from "./pages/EntriesList";
 import EntryDetail from "./pages/EntryDetail";
 
 const App = () => {
-  const [userId, setUserId] = useState("user_006");
+  const default_id = window.localStorage.getItem("userId") || "DefaultUser";
+  const [userId, setUserId] = useState(default_id);
   const baseUrl = "http://10.195.3.77:8080/api";
+  const defaultEntries = [
+    {
+      time: "1900-01-01T08:00:00Z",
+      conversation:
+        "No entries found for this user.",
+      shortSummary: "No Entries for this user.",
+    },
+  ];
 
   const handleUserIdChange = (e) => {
     setUserId(e.target.value);
     window.localStorage.setItem("userId", e.target.value);
   };
 
-  const [entries, setEntries] = useState([
-    {
-      time: "2021-09-01T08:00:00Z",
-      conversation:
-        "I had a great day today. I went to the park and played with my friends. I also had a picnic with my family. I'm so happy.",
-      shortSummary: "Great day at the park",
-    },
-    {
-      time: "2021-09-02T08:00:00Z",
-      conversation:
-        "Today was a very busy day. I had a lot of work to do at school. I also had to help my mom with the groceries. I'm very tired.",
-      shortSummary: "Busy day at school",
-    },
-    {
-      time: "2021-09-03T08:00:00Z",
-      conversation:
-        "I had a lot of fun today. I went to the beach with my family. We played in the sand and swam in the ocean. I'm so excited.",
-      shortSummary: "Fun day at the beach",
-    },
-  ]);
+  const [entries, setEntries] = useState(defaultEntries);
 
-  useEffect(() => {
-    const fetchEntries = async () => {
-      console.log(`${baseUrl}/journals/${userId}`);
+  const fetchEntries = async () => {
+    try {
       const response = await fetch(`${baseUrl}/journals/${userId}`);
       const data = await response.json();
       setEntries(data);
-    };
+    } catch (error) {
+      setEntries(defaultEntries);
+    }
+  };
+
+  useEffect(() => {
     if (userId) {
       fetchEntries();
     }
@@ -50,14 +44,6 @@ const App = () => {
   useEffect(() => {
     console.log(entries);
   }, [entries]);
-
-  // get userId from local storage
-  useEffect(() => {
-    const userId = window.localStorage.getItem("userId");
-    if (userId) {
-      setUserId(userId);
-    }
-  }, []);
 
   return (
     <Router className="h-full w-screen">
@@ -94,7 +80,7 @@ const App = () => {
           <Route path="/entries" element={<EntriesList entries={entries} />} />
           <Route
             path="/entries/:id"
-            element={<EntryDetail entries={entries} />}
+            element={<EntryDetail entries={entries}/>}
           />
         </Routes>
       </div>
