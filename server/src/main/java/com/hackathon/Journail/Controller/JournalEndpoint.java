@@ -155,4 +155,10 @@ public class JournalEndpoint {
     public ResponseEntity<?> query(@RequestBody JournalDTO journalDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        String healthStatus = "{\"status\":\"UP\"}";
+        return ResponseEntity.status(HttpStatus.OK).body(healthStatus);
+    }
 }

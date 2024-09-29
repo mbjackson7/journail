@@ -16,7 +16,7 @@ provider "aws" {
 }
 
 data "aws_secretsmanager_secret" "secret" {
-  name = var.app_name  # The name of your secret
+  name = var.app_name # The name of your secret
 }
 
 data "aws_secretsmanager_secret_version" "secret_version" {
