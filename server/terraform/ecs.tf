@@ -6,8 +6,10 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   family                   = "${var.app_name}-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = "256" # Adjust as needed
-  memory                   = "512" # Adjust as needed
+  cpu                      = "256"                          # Adjust as needed
+  memory                   = "512"                          # Adjust as needed
+  task_role_arn            = aws_iam_role.ecs_task_role.arn # Attach the IAM role here
+
 
   container_definitions = jsonencode([{
     name      = "${var.app_name}-container"
@@ -21,6 +23,13 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
       hostPort      = 8080
       protocol      = "tcp"
     }]
+
+    secrets = [
+      for key, value in local.secret_json : {
+        name      = key
+        valueFrom = "${data.aws_secretsmanager_secret.myapp_secret.arn}:${key}"
+      }
+    ]
   }])
 }
 

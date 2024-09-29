@@ -9,6 +9,7 @@ resource "null_resource" "docker_build_and_push" {
 
   provisioner "local-exec" {
     command = <<EOT
+            mvn -f ../pom.xml clean package
             docker build -t ${var.app_name} ../
             aws ecr get-login-password --region ${var.primary_region} | docker login --username AWS --password-stdin ${var.account_id}.dkr.ecr.${var.primary_region}.amazonaws.com
             docker tag ${var.app_name}:latest ${var.account_id}.dkr.ecr.${var.primary_region}.amazonaws.com/${aws_ecr_repository.ecr_repo.name}:latest
