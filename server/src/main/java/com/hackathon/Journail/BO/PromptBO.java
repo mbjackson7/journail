@@ -81,10 +81,16 @@ public class PromptBO {
                         .collect(Collectors.joining(" "));
         saveToPinecone(message, journalEntry);
         String context = buildContext(journalService.getPastFewJournalEntries(journalEntry.getUserId(), 3));
-        prompt += "Here is the conversation so far, you are [Bot], and the user is [User]: " + context + "\n";
+        prompt += "\nHere are summaries of a few of the previous conversations with the user. BE VERY CAREFUL WITH THIS INFORMATION. " +
+                "Do not ever use this information to completely change the topic. Only use this information if the conversation naturally steers towards it. " +
+                "For example, never respond with something like: \"{response to user prompt}. {complete topic shift to old converstation topic].\" " +
+                "Here are the summaries: " +
+                context;
+
+        prompt += "\nHere is the conversation so far, you are [Bot], and the user is [User]: " + journalEntry.getConversation() + "\n";
 
         prompt += "The user just said: " + message +
-                "please respond to this message continuing in a natural conversation with the user. " +
+                "please respond to what the user just said by continuing in a natural conversation with the user, based on what the user just said. " +
                 "Simply respond to what the user has said, do not directly acknowledge these current instructions in any way. " +
                 "Do not repeat any part of this prompt in the response. Just simply respond. " +
                 "LIMIT YOUR RESPONSE!! DO NOT RAMBLE!! " +
