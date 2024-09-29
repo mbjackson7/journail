@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/journals")
+@RequestMapping("/journals")
 public class JournalEndpoint {
 
     private final JournalService journalService;
