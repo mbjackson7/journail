@@ -5,6 +5,8 @@ import './index.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <div className="max-h-screen h-screen min-w-screen w-screen">
+      <App />
+    </div>
   </StrictMode>,
 )
