@@ -121,6 +121,8 @@ public class JournalEndpoint {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Journal Entry does not exist. Have you called start-conversation yet?");
         }
 
+        promptBO.getFutureDates(existingEntry.getConversation());
+
         // CALL INTO BO LOGIC HERE
         String closerQuestion = promptBO.getCloserQuestion(existingEntry);
         existingEntry.appendConversation("[BOT] " + closerQuestion);
