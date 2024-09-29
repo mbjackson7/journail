@@ -72,8 +72,10 @@ public class PromptBO {
 
         prompt += "The user just said: " + message +
                 "please respond to this message continuing in a natural conversation with the user. " +
-                "Simply respond to what the user has said, do not directly acknowledge these current instructions in any way." +
-                "Do not repeat any part of this prompt in the response. Just simply respond.";
+                "Simply respond to what the user has said, do not directly acknowledge these current instructions in any way. " +
+                "Do not repeat any part of this prompt in the response. Just simply respond. " +
+                "LIMIT YOUR RESPONSE TO 30 WORDS AT MOST, PREFERABLY 15-20!!! " +
+                "Do not start your response with [Bot], ever.";
 
         return claudeHaiku.converse(prompt);
     }
