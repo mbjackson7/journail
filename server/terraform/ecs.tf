@@ -27,7 +27,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
     secrets = [
       for key, value in local.secret_json : {
         name      = key
-        valueFrom = "${data.aws_secretsmanager_secret.myapp_secret.arn}:${key}"
+        valueFrom = "${data.aws_secretsmanager_secret.secret.arn}:${key}"
       }
     ]
   }])
