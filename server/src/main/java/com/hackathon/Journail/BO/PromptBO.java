@@ -65,7 +65,8 @@ public class PromptBO {
 
         //Look for relevance in vector db
         List<PineconeEntry> pineconeEntries = pineconeBo.get(message, journalEntry.getUserId());
-        prompt += "Here is some more information relevant to what the user just said: " +
+        prompt += "Here is some more information relevant to what the user just said. " +
+                "Make your best attempt to follow up on specific nouns contained in these entries to further inspire the user: " +
                 pineconeEntries.stream()
                         .map(PineconeEntry::getContent)
                         .collect(Collectors.joining(" "));
