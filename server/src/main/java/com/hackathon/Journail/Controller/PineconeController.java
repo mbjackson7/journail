@@ -1,10 +1,7 @@
 package com.hackathon.Journail.Controller;
 
 import com.hackathon.Journail.BO.PineconeBo;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,12 +15,12 @@ public class PineconeController {
     }
 
     @PostMapping("/save-vector")
-    public void saveToVectorStore(@RequestBody String textToEmbed) {
-        pineconeBo.save(textToEmbed);
+    public void saveToVectorStore(@RequestBody String textToEmbed, @RequestParam("userId") String userId) {
+        pineconeBo.save(textToEmbed, userId);
     }
 
     @GetMapping("/check-vector")
-    public List<String> checkVectorStore(@RequestBody String query) {
-        return pineconeBo.get(query);
+    public List<String> checkVectorStore(@RequestBody String query, @RequestParam("userId") String userId) {
+        return pineconeBo.get(query, userId);
     }
 }
