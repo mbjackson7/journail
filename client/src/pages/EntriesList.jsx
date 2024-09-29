@@ -36,10 +36,11 @@ const EntriesList = ({ entries }) => {
                 <p className="text-gray-600">{entry.shortSummary}</p>
               </div>
               <Link
-                className="text-blue-500 hover:underline"
                 to={`/entries/${entry.time}`}
               >
-                View
+                <button className="bg-custom1 text-black p-2 rounded-3xl">
+                  View
+                </button>
               </Link>
             </div>
           </li>

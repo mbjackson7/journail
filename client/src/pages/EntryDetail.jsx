@@ -21,7 +21,7 @@ const EntryDetail = ({ entries }) => {
 
   return (
     <div className="p-4">
-      <button className="bg-blue-500 text-white p-2 mb-4" onClick={() => window.history.back()}>Back</button>
+      <button className="bg-custom1 text-black p-2 mb-4 rounded-3xl" onClick={() => window.history.back()}>Back</button>
       {entry && (
         <>
           <h2 className="text-2xl font-bold mb-4">

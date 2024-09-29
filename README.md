@@ -24,7 +24,7 @@ Ensure you have reviewed the [Rules & FAQ](https://hackmidwest.com/#faq)
 
 
 ## What is the name of your App?
-Journail
+Clarity
 
 <br /><br />
 ## What does your app do?

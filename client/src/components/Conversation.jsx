@@ -8,7 +8,7 @@ const Conversation = ({ messages }) => (
           </div>
         )}
         <div className="text-black bg-custom4 p-2 rounded-3xl">
-          <strong>JOURNaiL:</strong> {msg.bot}
+          <strong>Clarity:</strong> {msg.bot}
         </div>
       </div>
     ))}
