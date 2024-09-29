@@ -13,18 +13,20 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Component
 public class PromptBO {
 
     private final ClaudeHaiku claudeHaiku;
-
     private final JournalServiceImpl journalService;
+    private final PineconeBo pineconeBo;
 
     @Autowired
-    PromptBO(ClaudeHaiku claudeHaiku, JournalServiceImpl journalService) {
+    PromptBO(ClaudeHaiku claudeHaiku, JournalServiceImpl journalService, PineconeBo pineconeBo) {
         this.claudeHaiku = claudeHaiku;
         this.journalService = journalService;
+        this.pineconeBo = pineconeBo;
     }
 
     public String getStarterQuestion(JournalEntry journalEntry) {
@@ -51,6 +53,21 @@ public class PromptBO {
         //prompt bedrock for closer based on context and random default closer here
 
         return getRandomQuestion(defaultClosers);
+    }
+
+    public String respond(String message, JournalEntry journalEntry) {
+        String prompt = "Take the following message and respond and further ask another question in response as if you were a friend or therapist talking to the person.";
+
+
+        //Look for relevance in vector db
+        List<PineconeEntry> pineconeEntries = pineconeBo.get(message, journalEntry.getUserId());
+        prompt += " Also use context from the following strings: " +
+                pineconeEntries.stream()
+                        .map(PineconeEntry::getContent)
+                        .collect(Collectors.joining(" "));
+        prompt += "message: " + message;
+
+        return claudeHaiku.converse(prompt);
     }
 
     private List<String> getSampleQuestions(String sampleQuestionFile) {

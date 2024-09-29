@@ -100,8 +100,8 @@ public class JournalEndpoint {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing message.");
         }
 
+        String botMessage = promptBO.respond(journalDTO.getMessage(), existingEntry);
         existingEntry.appendConversation("[User] " + journalDTO.getMessage());
-        String botMessage = "Send Message Test";
         existingEntry.appendConversation("[Bot] " + botMessage);
         journalService.updateJournalEntry(existingEntry);
         //CALL INTO BO LOGIC HERE
