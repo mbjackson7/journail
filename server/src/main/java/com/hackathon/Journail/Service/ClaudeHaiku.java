@@ -14,15 +14,15 @@ import software.amazon.awssdk.services.bedrockruntime.model.Message;
 
 @Component
 public class ClaudeHaiku {
-    private final static Region region = Region.US_EAST_1;
+    private final Region region = Region.US_EAST_1;
 
     @Value("${access.key.id}")
-    private static String AwsAccessKeyId;
+    private String AwsAccessKeyId;
 
     @Value("${secret.access.key}")
-    private static String AwsSecretAccessKey;
+    private String AwsSecretAccessKey;
 
-    public static String converse(String inputText) {
+    public String converse(String inputText) {
         AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(AwsAccessKeyId, AwsSecretAccessKey);
         StaticCredentialsProvider staticCredentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
         BedrockRuntimeClient bedrockRuntimeClient = BedrockRuntimeClient.builder().credentialsProvider(staticCredentialsProvider).region(region).build();
