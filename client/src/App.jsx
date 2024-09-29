@@ -11,6 +11,7 @@ const App = () => {
 
   const handleUserIdChange = (e) => {
     setUserId(e.target.value);
+    window.localStorage.setItem("userId", e.target.value);
   };
 
   const [entries, setEntries] = useState([
@@ -49,6 +50,14 @@ const App = () => {
   useEffect(() => {
     console.log(entries);
   }, [entries]);
+
+  // get userId from local storage
+  useEffect(() => {
+    const userId = window.localStorage.getItem("userId");
+    if (userId) {
+      setUserId(userId);
+    }
+  }, []);
 
   return (
     <Router className="h-full w-screen">
