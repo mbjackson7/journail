@@ -1,6 +1,7 @@
 package com.hackathon.Journail.Service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.exception.SdkClientException;
@@ -11,16 +12,17 @@ import software.amazon.awssdk.services.bedrockruntime.model.ConversationRole;
 import software.amazon.awssdk.services.bedrockruntime.model.ConverseResponse;
 import software.amazon.awssdk.services.bedrockruntime.model.Message;
 
+@Component
 public class ClaudeHaiku {
     private final static Region region = Region.US_EAST_1;
 
     @Value("${access.key.id}")
-    private String AwsAccessKeyId;
+    private static String AwsAccessKeyId;
 
     @Value("${secret.access.key}")
-    private String AwsSecretAccessKey;
+    private static String AwsSecretAccessKey;
 
-    public String converse(String inputText) {
+    public static String converse(String inputText) {
         AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(AwsAccessKeyId, AwsSecretAccessKey);
         StaticCredentialsProvider staticCredentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
         BedrockRuntimeClient bedrockRuntimeClient = BedrockRuntimeClient.builder().credentialsProvider(staticCredentialsProvider).region(region).build();
