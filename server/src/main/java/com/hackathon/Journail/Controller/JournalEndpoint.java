@@ -148,6 +148,8 @@ public class JournalEndpoint {
         journalEntry.appendConversation("[User] " + journalDTO.getMessage());
         journalService.updateJournalEntry(journalEntry);
 
+        promptBO.createSummary(journalEntry);
+
         // CALL INTO BO LOGIC HERE>
 
         return ResponseEntity.status(HttpStatus.OK).body(null);

@@ -55,13 +55,15 @@ public class PromptBO {
 
     public String getCloserQuestion(JournalEntry journalEntry) {
         List<String> defaultClosers = getSampleQuestions("sampleclosingquestions.txt");
-        String summary = getSummary(journalEntry.getConversation());
-        journalEntry.setSummary((summary));
-        journalService.updateJournalEntry(journalEntry);
-
         //prompt bedrock for closer based on context and random default closer here
 
         return getRandomQuestion(defaultClosers);
+    }
+
+    public void createSummary(JournalEntry journalEntry) {
+        String summary = getSummary(journalEntry.getConversation());
+        journalEntry.setSummary(summary);
+        journalService.updateJournalEntry(journalEntry);
     }
 
     public String respond(String message, JournalEntry journalEntry) {
