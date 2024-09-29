@@ -85,12 +85,11 @@ public class JournalEndpoint {
         JournalEntry journalEntry = new JournalEntry();
         journalEntry.setUserId(journalDTO.getUserId());
         journalEntry.setTime(journalDTO.getTime());
-        journalService.createJournalEntry(journalEntry);
-        //TODO: Service call to get starter question
+
         String starterQuestion = promptBO.getStarterQuestion(journalEntry);
-
-        return ResponseEntity.status(HttpStatus.OK).body("How was your day?");
-
+        journalEntry.setConversation("[Bot] " + starterQuestion);
+        journalService.createJournalEntry(journalEntry);
+        return ResponseEntity.status(HttpStatus.OK).body(starterQuestion);
     }
 
     @PostMapping("/send-message")
