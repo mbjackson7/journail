@@ -16,6 +16,13 @@ import java.util.Random;
 @Component
 public class PromptBO {
 
+    private final ClaudeHaiku claudeHaiku;
+
+    @Autowired
+    PromptBO(ClaudeHaiku claudeHaiku) {
+        this.claudeHaiku = claudeHaiku;
+    }
+
     public String getStarterQuestion(JournalEntry journalEntry) {
         List<String> defaultOpeners = getSampleQuestions("sampleopeners.txt");
 
@@ -23,7 +30,7 @@ public class PromptBO {
         String defaultStarterQuestion = getRandomQuestion(defaultOpeners);
         String starterPrompt = "Give me something similar to the following question: " + defaultStarterQuestion;
 
-        return ClaudeHaiku.converse(starterPrompt);
+        return claudeHaiku.converse(starterPrompt);
     }
 
     public String getCloserQuestion(JournalEntry journalEntry) {
