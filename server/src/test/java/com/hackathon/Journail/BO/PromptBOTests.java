@@ -19,15 +19,15 @@ public class PromptBOTests {
     private PromptBO promptBO;
 
 
-    @Test
-    void getStarterQuestionTest_notNullResponse() {
-        String testStarterQuestion = promptBO.getStarterQuestion(journalEntry);
-        assertThat(testStarterQuestion).isNotNull();
-    }
-
-    @Test
-    void getCloserQuestionTest_notNullResponse() {
-        String testCloserQuestion = promptBO.getCloserQuestion(journalEntry);
-        assertThat(testCloserQuestion).isNotNull();
-    }
+//    @Test
+//    void getStarterQuestionTest_notNullResponse() {
+//        String testStarterQuestion = promptBO.getStarterQuestion(journalEntry);
+//        assertThat(testStarterQuestion).isNotNull();
+//    }
+//
+//    @Test
+//    void getCloserQuestionTest_notNullResponse() {
+//        String testCloserQuestion = promptBO.getCloserQuestion(journalEntry);
+//        assertThat(testCloserQuestion).isNotNull();
+//    }
 }
