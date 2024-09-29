@@ -97,5 +97,7 @@ public class JournalEntry {
         return Objects.hash(id, userId, time, conversation, summary, shortSummary, keywords);
     }
 
+    public void getFutureTimes() {
 
+    }
 }

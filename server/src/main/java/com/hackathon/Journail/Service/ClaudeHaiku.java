@@ -27,7 +27,7 @@ public class ClaudeHaiku {
         StaticCredentialsProvider staticCredentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
         BedrockRuntimeClient bedrockRuntimeClient = BedrockRuntimeClient.builder().credentialsProvider(staticCredentialsProvider).region(region).build();
 
-        String modelId = "anthropic.claude-3-haiku-20240307-v1:0";
+        String modelId = "anthropic.claude-3-sonnet-20240229-v1:0";
 
         Message message = Message.builder().content(ContentBlock.fromText(inputText)).role(ConversationRole.USER).build();
 

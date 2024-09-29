@@ -1,5 +1,7 @@
 package com.hackathon.Journail.BO;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hackathon.Journail.Model.JournalEntry;
 import com.hackathon.Journail.Service.ClaudeHaiku;
 import com.hackathon.Journail.Service.JournalServiceImpl;
@@ -7,11 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -82,6 +88,25 @@ public class PromptBO {
                 "Do not start your response with [Bot], ever.";
 
         return claudeHaiku.converse(prompt);
+    }
+
+    public List<String> getFutureDates(String conversation) {
+        LocalDate currentDate = LocalDate.now();
+        DayOfWeek dayOfWeek = currentDate.getDayOfWeek();
+        String prompt = "Today is " + dayOfWeek + ", " + currentDate + ". Parse any mentions of dates out of the following text as json mappings (AND NO OTHER TEXT) between dates and events. If none are found, just return an empty string:\n" + conversation;
+
+        String response = claudeHaiku.converse(prompt);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            Map<String, Object> map = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
+            System.out.println(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return new ArrayList<String>();
     }
 
     private List<String> getSampleQuestions(String sampleQuestionFile) {
