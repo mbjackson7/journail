@@ -97,23 +97,24 @@ public class JournalEndpoint {
     public ResponseEntity<?> sendMessage(@RequestBody JournalDTO journalDTO) {
         JournalEntry existingEntry = journalService.getJournalEntry(journalDTO.getUserId(), journalDTO.getTime());
         if (existingEntry == null) {
-            // Create new entry
-            JournalEntry journalEntry = new JournalEntry();
-            journalEntry.setUserId(journalDTO.getUserId());
-            journalEntry.setTime(journalDTO.getTime());
-            journalService.createJournalEntry(journalEntry);
-
-        } else {
-
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Journal Entry does not exist. Have you called start-conversation yet?");
         }
+        if (journalDTO.getMessage() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing message.");
+        }
+
+        existingEntry.appendConversation("[User] " + journalDTO.getMessage() + "\n");
+        String botMessage = "Send Message Test";
+        existingEntry.appendConversation("[Bot] " + botMessage + "\n");
+        journalService.updateJournalEntry(existingEntry);
         //CALL INTO BO LOGIC HERE
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(botMessage);
     }
 
     @PostMapping("/end-conversation")
     public ResponseEntity<?> endConversation(@RequestBody JournalDTO journalDTO) {
         // CALL INTO BO LOGIC HERE>
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body("Goodbye");
     }
 
     @PostMapping("/query")

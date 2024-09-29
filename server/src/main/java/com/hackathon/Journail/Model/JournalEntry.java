@@ -47,7 +47,10 @@ public class JournalEntry {
     }
 
     public void setConversation(String conversation) {
-        this.conversation = conversation;
+        if (this.conversation == null) {
+            this.conversation = "";
+        }
+        this.conversation += conversation;
     }
 
     public String getSummary() {
@@ -72,6 +75,13 @@ public class JournalEntry {
 
     public void setKeywords(List<String> keywords) {
         this.keywords = keywords;
+    }
+
+    public void appendConversation(String message) {
+        if (this.conversation == null) {
+            this.conversation = "";
+        }
+        this.conversation += message;
     }
 
     @Override

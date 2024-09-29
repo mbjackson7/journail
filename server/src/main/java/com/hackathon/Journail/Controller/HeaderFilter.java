@@ -15,6 +15,7 @@ public class HeaderFilter implements Filter {
             throws IOException, ServletException {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.addHeader("Access-Control-Allow-Origin", "*");
+        httpResponse.addHeader("Access-Control-Allow-Headers", "*");
         chain.doFilter(request, response);
     }
 
