@@ -49,6 +49,9 @@ public class PromptBO {
 
     public String getCloserQuestion(JournalEntry journalEntry) {
         List<String> defaultClosers = getSampleQuestions("sampleclosingquestions.txt");
+        String summary = getSummary(journalEntry.getConversation());
+        journalEntry.setSummary((summary));
+        journalService.updateJournalEntry(journalEntry);
 
         //prompt bedrock for closer based on context and random default closer here
 
@@ -60,15 +63,13 @@ public class PromptBO {
                 "You have been having a conversation with an end user, and should continue this conversation naturally based on a history of the conversation I will provide, " +
                 "as well as a collection of extra contextual information pulled from past journal entries from the user.\n";
 
-        saveToPinecone(message, journalEntry);
-
         //Look for relevance in vector db
         List<PineconeEntry> pineconeEntries = pineconeBo.get(message, journalEntry.getUserId());
         prompt += "Here is some more information relevant to what the user just said: " +
                 pineconeEntries.stream()
                         .map(PineconeEntry::getContent)
                         .collect(Collectors.joining(" "));
-
+        saveToPinecone(message, journalEntry);
         String context = buildContext(journalService.getPastFewJournalEntries(journalEntry.getUserId(), 3));
         prompt += "Here is the conversation so far, you are bot, and the user is user: " + context + "\n";
 
@@ -109,7 +110,7 @@ public class PromptBO {
         StringBuilder sb = new StringBuilder();
 
         for (JournalEntry journalEntry : journalEntries) {
-            sb.append(journalEntry.getConversation()).append("\n\n");
+            sb.append(journalEntry.getSummary()).append("\n\n");
         }
 
         return sb.toString();
@@ -121,6 +122,12 @@ public class PromptBO {
         pineconeEntry.setDate(journalEntry.getTime());
         pineconeEntry.setContent(message);
         pineconeBo.save(pineconeEntry);
+    }
+
+    private String getSummary(String conversation) {
+        String prompt = "Please summarize the following text so that it can be used for context later on in another prompt. Your answer needs to be short and concise."
+                + " This is the conversation: " + conversation;
+        return claudeHaiku.converse(prompt);
     }
 
 }
