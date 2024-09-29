@@ -58,6 +58,7 @@ public class PromptBO {
     public String respond(String message, JournalEntry journalEntry) {
         String prompt = "Take the following message and respond and further ask another question in response as if you were a friend or therapist talking to the person.";
 
+        saveToPinecone(message, journalEntry);
 
         //Look for relevance in vector db
         List<PineconeEntry> pineconeEntries = pineconeBo.get(message, journalEntry.getUserId());
@@ -101,6 +102,14 @@ public class PromptBO {
         }
 
         return sb.toString();
+    }
+
+    private void saveToPinecone(String message, JournalEntry journalEntry) {
+        PineconeEntry pineconeEntry = new PineconeEntry();
+        pineconeEntry.setUserId(journalEntry.getUserId());
+        pineconeEntry.setDate(journalEntry.getTime());
+        pineconeEntry.setContent(message);
+        pineconeBo.save(pineconeEntry);
     }
 
 }
