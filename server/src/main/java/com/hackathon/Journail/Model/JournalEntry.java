@@ -81,7 +81,7 @@ public class JournalEntry {
         if (this.conversation == null) {
             this.conversation = "";
         }
-        this.conversation += message;
+        this.conversation += message + "\n";
     }
 
     @Override
@@ -97,5 +97,7 @@ public class JournalEntry {
         return Objects.hash(id, userId, time, conversation, summary, shortSummary, keywords);
     }
 
+    public void getFutureTimes() {
 
+    }
 }

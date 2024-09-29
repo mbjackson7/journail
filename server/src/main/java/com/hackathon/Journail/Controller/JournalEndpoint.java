@@ -13,18 +13,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/journals")
+@RequestMapping("/journals")
 public class JournalEndpoint {
 
     private final JournalService journalService;
     private final PromptBO promptBO;
-    private HttpHeaders headers = new HttpHeaders();
 
     @Autowired
     public JournalEndpoint(JournalService journalService, PromptBO promptBO) {
         this.journalService = journalService;
         this.promptBO = promptBO;
-        headers.add("Access-Control-Allow-Origin", "*");
     }
 
     @GetMapping()
@@ -85,12 +83,11 @@ public class JournalEndpoint {
         JournalEntry journalEntry = new JournalEntry();
         journalEntry.setUserId(journalDTO.getUserId());
         journalEntry.setTime(journalDTO.getTime());
-        journalService.createJournalEntry(journalEntry);
-        //TODO: Service call to get starter question
+
         String starterQuestion = promptBO.getStarterQuestion(journalEntry);
-
-        return ResponseEntity.status(HttpStatus.OK).body("How was your day?");
-
+        journalEntry.appendConversation("[Bot] " + starterQuestion);
+        journalService.createJournalEntry(journalEntry);
+        return ResponseEntity.status(HttpStatus.OK).body(starterQuestion);
     }
 
     @PostMapping("/send-message")
@@ -103,22 +100,68 @@ public class JournalEndpoint {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing message.");
         }
 
-        existingEntry.appendConversation("[User] " + journalDTO.getMessage() + "\n");
-        String botMessage = "Send Message Test";
-        existingEntry.appendConversation("[Bot] " + botMessage + "\n");
+        String botMessage = promptBO.respond(journalDTO.getMessage(), existingEntry);
+        existingEntry.appendConversation("[User] " + journalDTO.getMessage());
+        existingEntry.appendConversation("[Bot] " + botMessage);
         journalService.updateJournalEntry(existingEntry);
         //CALL INTO BO LOGIC HERE
         return ResponseEntity.status(HttpStatus.OK).body(botMessage);
     }
 
+    @PostMapping("/initiate-end-conversation")
+    public ResponseEntity<?> initiateEndConversation(@RequestBody JournalDTO journalDTO) {
+        if (journalDTO.getUserId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing userId");
+        } else if (journalDTO.getTime() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing time");
+        }
+
+        JournalEntry existingEntry = journalService.getJournalEntry(journalDTO.getUserId(), journalDTO.getTime());
+        if (existingEntry == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Journal Entry does not exist. Have you called start-conversation yet?");
+        }
+
+
+        // CALL INTO BO LOGIC HERE
+        String closerQuestion = promptBO.getCloserQuestion(existingEntry);
+        existingEntry.appendConversation("[BOT] " + closerQuestion);
+        journalService.updateJournalEntry(existingEntry);
+
+        return ResponseEntity.status(HttpStatus.OK).body(closerQuestion);
+    }
+
     @PostMapping("/end-conversation")
     public ResponseEntity<?> endConversation(@RequestBody JournalDTO journalDTO) {
+        if (journalDTO.getUserId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing userId");
+        } else if (journalDTO.getTime() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing time");
+        } else if (journalDTO.getMessage() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing message");
+        }
+        JournalEntry journalEntry = journalService.getJournalEntry(journalDTO.getUserId(), journalDTO.getTime());
+        if (journalEntry == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Journal Entry not found");
+        }
+
+        journalEntry.appendConversation("[User] " + journalDTO.getMessage());
+        journalService.updateJournalEntry(journalEntry);
+
+        promptBO.createSummary(journalEntry);
+
         // CALL INTO BO LOGIC HERE>
-        return ResponseEntity.status(HttpStatus.OK).body("Goodbye");
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @PostMapping("/query")
     public ResponseEntity<?> query(@RequestBody JournalDTO journalDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        String healthStatus = "{\"status\":\"UP\"}";
+        return ResponseEntity.status(HttpStatus.OK).body(healthStatus);
     }
 }

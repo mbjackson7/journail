@@ -3,7 +3,9 @@ package com.hackathon.Journail.BO;
 import java.util.List;
 
 public interface PineconeBo {
-    List<String> get(String query);
+    List<PineconeEntry> get(String query, String userId);
 
-    void save(String textToEmbed);
+    List<PineconeEntry> getByDate(String query, String userId, String date);
+
+    void save(PineconeEntry newEntry);
 }

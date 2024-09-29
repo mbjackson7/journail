@@ -1,0 +1,70 @@
+name: Deploy Terraform to AWS
+
+on:
+  push:
+    branches:
+      - main  # Change to your default branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK for Maven
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'  # Specify your Java version
+          distribution: 'adopt'
+    
+      
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Install Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          sudo systemctl enable docker
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.6.0  # Change to your desired Terraform version
+
+
+      - name: Get AWS Account ID
+        id: get_account_id
+        run: |
+            ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+            echo "ACCOUNT_ID=${ACCOUNT_ID}" >> $GITHUB_ENV
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-west-1  # Change to your desired region
+
+      - name: Terraform Init
+        run: terraform init -backend-config="bucket=terraform-state-${{ env.ACCOUNT_ID }}"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-west-1  # Change to your desired region
+
+      - name: Terraform Plan
+        run: terraform plan -var="account_id=${{ env.ACCOUNT_ID }}" -out=myplan.tfplan
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-west-1  # Change to your desired region
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve myplan.tfplan
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-west-1  # Change to your desired region
