@@ -110,6 +110,24 @@ public class JournalEndpoint {
         return ResponseEntity.status(HttpStatus.OK).body(botMessage);
     }
 
+    @PostMapping("/initiate-end-conversation")
+    public ResponseEntity<?> initiateEndConversation(@RequestBody JournalDTO journalDTO) {
+        if (journalDTO.getUserId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing userId");
+        } else if (journalDTO.getTime() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing time");
+        }
+
+        JournalEntry existingEntry = journalService.getJournalEntry(journalDTO.getUserId(), journalDTO.getTime());
+        if (existingEntry == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Journal Entry does not exist. Have you called start-conversation yet?");
+        }
+
+        // CALL INTO BO LOGIC HERE
+        String closerQuestion = promptBO.getCloserQuestion(existingEntry);
+        return ResponseEntity.status(HttpStatus.OK).body(closerQuestion);
+    }
+
     @PostMapping("/end-conversation")
     public ResponseEntity<?> endConversation(@RequestBody JournalDTO journalDTO) {
         // CALL INTO BO LOGIC HERE>
