@@ -1,0 +1,38 @@
+# Maven
+target/
+*.log
+
+# IDE-specific files
+.idea/
+*.iml
+*.class
+*.jar
+*.war
+*.ear
+
+# Spring Boot specific
+*.properties
+*.yml
+*.yaml
+/application-*.yml
+/application-*.yaml
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Maven Wrapper
+.mvn/
+.mvn/wrapper/
+**/mvnw
+**/mvnw.cmd
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Other files to ignore
+*.swp
+*.swo
+*.orig
