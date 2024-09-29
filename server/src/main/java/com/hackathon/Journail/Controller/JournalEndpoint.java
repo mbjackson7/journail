@@ -122,9 +122,6 @@ public class JournalEndpoint {
         if (existingEntry == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Journal Entry does not exist. Have you called start-conversation yet?");
         }
-        if (journalDTO.getMessage() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing message.");
-        }
 
         // CALL INTO BO LOGIC HERE
         String closerQuestion = promptBO.getCloserQuestion(existingEntry);
