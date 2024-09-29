@@ -5,7 +5,7 @@ import './index.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <div className="max-h-screen h-screen min-w-screen w-screen">
+    <div className="text-text max-h-screen h-screen min-w-screen w-screen">
       <App />
     </div>
   </StrictMode>,

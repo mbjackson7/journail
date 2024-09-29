@@ -53,11 +53,14 @@ const ChatInterface = ({ userId, baseUrl }) => {
     setAllowInput(false);
     setInput("");
     setMessages([...messages, { user: input, bot: "..." }]);
-    const response = await fetch(`${baseUrl}/journals/initiate-end-conversation`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, time }),
-    });
+    const response = await fetch(
+      `${baseUrl}/journals/initiate-end-conversation`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, time }),
+      }
+    );
     setEnding(true);
     const data = await response.text();
     setMessages([...messages, { user: input, bot: data }]);
@@ -79,37 +82,44 @@ const ChatInterface = ({ userId, baseUrl }) => {
     scrollToBottom();
   }, [messages]);
 
-
   return (
     <div className="flex flex-col h-full">
       <div className="p-4 pt-10 overflow-scroll">
         {messages.map((msg, index) => (
           <div key={index} className="mb-4">
             {msg.user !== "" && (
-              <div className="bg-slate-800 p-2 rounded-3xl mb-2">
+              <div className="text-black bg-custom1 p-2 rounded-3xl mb-2">
                 <strong>You:</strong> {msg.user}
               </div>
             )}
-            <div className="bg-slate-600 p-2 rounded-3xl">
-              <strong>Bot:</strong> {msg.bot}
+            <div className="text-black bg-custom4 p-2 rounded-3xl">
+              <strong>JOURNaiL:</strong> {msg.bot}
             </div>
           </div>
         ))}
         <div className="pb-20" ref={messagesEndRef} />
       </div>
-      <div className="bg-[#242424] p-4 fixed bottom-0 left-0 right-0">
+      <div className="bg-back-dark p-4 fixed bottom-0 left-0 right-0">
         {messages.length === 0 ? (
           <button
-            className="text-center w-full rounded-3xl bg-yellow-600"
+            className="text-black text-center w-full rounded-3xl bg-custom4"
             onClick={startConversation}
           >
             Start A Journal Entry
           </button>
         ) : (
           <div className="max-w-3xl mx-auto flex">
+            {!ending && (
+              <button
+                className="bg-custom2 text-black p-2 rounded-3xl"
+                onClick={initEndConversation}
+              >
+                X
+              </button>
+            )}
             <input
               id="message_input"
-              className="border p-2 flex-grow mr-2 rounded-3xl"
+              className="bg-white text-black  p-2 flex-grow ml-2 mr-2 rounded-3xl"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
@@ -117,7 +127,7 @@ const ChatInterface = ({ userId, baseUrl }) => {
             {ending ? (
               <>
                 <button
-                  className="bg-yellow-600 text-white p-2 rounded-3xl"
+                  className="bg-custom4 text-black p-2 rounded-3xl"
                   onClick={endConversation}
                 >
                   Send Feedback
@@ -126,17 +136,11 @@ const ChatInterface = ({ userId, baseUrl }) => {
             ) : (
               <>
                 <button
-                  className="bg-yellow-600 text-white p-2 mr-2 rounded-3xl"
+                  className="bg-custom4 text-black p-2 mr-2 rounded-3xl"
                   onClick={sendMessage}
                   disabled={!allowInput}
                 >
                   ➤
-                </button>
-                <button
-                  className="bg-rose-700 text-white p-2 rounded-3xl"
-                  onClick={initEndConversation}
-                >
-                  X
                 </button>
               </>
             )}

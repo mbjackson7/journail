@@ -19,7 +19,7 @@ const EntriesList = ({ entries }) => {
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Entries List</h2>
       <input
-        className="border p-2 mb-4 w-full"
+        className="border p-2 mb-4 w-full bg-white"
         type="text"
         placeholder="Search"
         value={search}
