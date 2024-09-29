@@ -32,16 +32,16 @@ const ChatInterface = ({ userId, baseUrl }) => {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 pt-10 overflow-scroll">
+      <div className="p-4 pt-10 overflow-scroll">
         {messages.map((msg, index) => (
           <div key={index} className="mb-4">
             {msg.user !== "" && (
-              <div className="bg-gray-800 p-2 rounded-3xl mb-2">
+              <div className="text-black bg-custom1 p-2 rounded-3xl mb-2">
                 <strong>You:</strong> {msg.user}
               </div>
             )}
-            <div className="bg-gray-600 p-2 rounded-3xl">
-              <strong>Bot:</strong> {msg.bot}
+            <div className="text-black bg-custom4 p-2 rounded-3xl">
+              <strong>JOURNaiL:</strong> {msg.bot}
             </div>
           </div>
         ))}
@@ -51,13 +51,13 @@ const ChatInterface = ({ userId, baseUrl }) => {
       <div className="bg-[#242424] p-4 fixed bottom-0 left-0 right-0">
         <div className="max-w-3xl mx-auto flex">
           <input
-            className="border p-2 flex-grow mr-2 rounded-3xl"
+            className="border p-2 flex-grow mr-2 rounded-3xl bg-white"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your question..."
           />
           <button
-            className="bg-yellow-600 text-white p-2 rounded-3xl"
+            className="bg-custom3 p-2 rounded-3xl"
             onClick={sendQuery}
             disabled={!allowInput}
           >

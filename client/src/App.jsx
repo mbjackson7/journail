@@ -52,19 +52,19 @@ const App = () => {
 
   return (
     <Router className="h-full w-screen">
-      <nav className="p-4 bg-gray-800 text-white w-screen flex gap-2 fixed h-20 items-center">
+      <nav className="p-4 bg-back-dark text-text w-screen flex gap-2 fixed h-20 items-center">
         <Link className="mr-4" to="/">
-          <button className="text-white">Chat</button>
+          <button className="text-black rounded-3xl bg-custom1">Make Journal Entry</button>
         </Link>
         <Link className="mr-4" to="/question">
-          <button className="text-white">Ask Question</button>
+          <button className="text-black rounded-3xl bg-custom2">Ask Question</button>
         </Link>
         <Link to="/entries">
-          <button className="text-white">Entries</button>
+          <button className="text-black rounded-3xl bg-custom3">Entries</button>
         </Link>
-        <span className="ml-auto">User ID:</span>
+        <span className="text-white ml-auto">User ID:</span>
         <input
-          className="p-2 rounded-3xl"
+          className="p-2 rounded-3xl bg-white"
           type="text"
           placeholder="Enter User ID"
           value={userId}
