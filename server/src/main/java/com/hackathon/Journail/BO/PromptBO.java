@@ -28,7 +28,10 @@ public class PromptBO {
 
         //prompt bedrock for opener based on context and random default opener here
         String defaultStarterQuestion = getRandomQuestion(defaultOpeners);
-        String starterPrompt = "Give me something similar to the following question: " + defaultStarterQuestion;
+        String starterPrompt =
+                "Give a similar question to the question that is listed in the prompt, without revealing that you are replying to me. Just give me a similar question only. " +
+                        "Do not say anything like \"Here's a similar question:\" Just give me the question only. Only one question.\n\n" +
+                        "Question:" + defaultStarterQuestion;
 
         return claudeHaiku.converse(starterPrompt);
     }
