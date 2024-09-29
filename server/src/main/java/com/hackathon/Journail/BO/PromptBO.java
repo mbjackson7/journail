@@ -23,18 +23,15 @@ public class PromptBO {
         String defaultStarterQuestion = getRandomQuestion(defaultOpeners);
         String starterPrompt = "Give me something similar to the following question: " + defaultStarterQuestion;
 
-        String starterQuestion = ClaudeHaiku.converse(starterPrompt);
-
-        return starterQuestion;
+        return ClaudeHaiku.converse(starterPrompt);
     }
 
     public String getCloserQuestion(JournalEntry journalEntry) {
         List<String> defaultClosers = getSampleQuestions("sampleclosingquestions.txt");
 
         //prompt bedrock for closer based on context and random default closer here
-        String defaultCloserQuestion = getRandomQuestion(defaultClosers);
 
-        return defaultCloserQuestion;
+        return getRandomQuestion(defaultClosers);
     }
 
     private List<String> getSampleQuestions(String sampleQuestionFile) {
