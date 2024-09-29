@@ -87,7 +87,7 @@ public class JournalEndpoint {
         journalEntry.setTime(journalDTO.getTime());
 
         String starterQuestion = promptBO.getStarterQuestion(journalEntry);
-        journalEntry.setConversation("[Bot] " + starterQuestion);
+        journalEntry.appendConversation("[Bot] " + starterQuestion);
         journalService.createJournalEntry(journalEntry);
         return ResponseEntity.status(HttpStatus.OK).body(starterQuestion);
     }
@@ -102,9 +102,9 @@ public class JournalEndpoint {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing message.");
         }
 
-        existingEntry.appendConversation("[User] " + journalDTO.getMessage() + "\n");
+        existingEntry.appendConversation("[User] " + journalDTO.getMessage());
         String botMessage = "Send Message Test";
-        existingEntry.appendConversation("[Bot] " + botMessage + "\n");
+        existingEntry.appendConversation("[Bot] " + botMessage);
         journalService.updateJournalEntry(existingEntry);
         //CALL INTO BO LOGIC HERE
         return ResponseEntity.status(HttpStatus.OK).body(botMessage);
@@ -125,13 +125,32 @@ public class JournalEndpoint {
 
         // CALL INTO BO LOGIC HERE
         String closerQuestion = promptBO.getCloserQuestion(existingEntry);
+        existingEntry.appendConversation("[BOT] " + closerQuestion);
+        journalService.updateJournalEntry(existingEntry);
+
         return ResponseEntity.status(HttpStatus.OK).body(closerQuestion);
     }
 
     @PostMapping("/end-conversation")
     public ResponseEntity<?> endConversation(@RequestBody JournalDTO journalDTO) {
+        if (journalDTO.getUserId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing userId");
+        } else if (journalDTO.getTime() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing time");
+        } else if (journalDTO.getMessage() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Body is missing message");
+        }
+        JournalEntry journalEntry = journalService.getJournalEntry(journalDTO.getUserId(), journalDTO.getTime());
+        if (journalEntry == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Journal Entry not found");
+        }
+
+        journalEntry.appendConversation("[User] " + journalDTO.getMessage());
+        journalService.updateJournalEntry(journalEntry);
+
         // CALL INTO BO LOGIC HERE>
-        return ResponseEntity.status(HttpStatus.OK).body("Goodbye");
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @PostMapping("/query")

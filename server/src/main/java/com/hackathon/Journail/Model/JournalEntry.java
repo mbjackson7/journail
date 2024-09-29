@@ -81,7 +81,7 @@ public class JournalEntry {
         if (this.conversation == null) {
             this.conversation = "";
         }
-        this.conversation += message;
+        this.conversation += message + "\n";
     }
 
     @Override
