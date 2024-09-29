@@ -2,8 +2,10 @@ package com.hackathon.Journail.Controller;
 
 import com.hackathon.Journail.BO.PineconeBo;
 import com.hackathon.Journail.BO.PineconeEntry;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
 import java.util.List;
 
 @RestController
@@ -21,12 +23,12 @@ public class PineconeController {
         pineconeBo.save(newEntry);
     }
 
-    @GetMapping("/check-vector")
+    @PostMapping("/check-vector")
     public List<PineconeEntry> checkVectorStore(@RequestBody String query, @RequestParam("userId") String userId) {
         return pineconeBo.get(query, userId);
     }
 
-    @GetMapping("/check-vector-by-date")
+    @PostMapping("/check-vector-by-date")
     public List<PineconeEntry> checkVectorStoreByDate(@RequestBody String query, @RequestParam("userId") String userId, @RequestParam("date") String date) {
         return pineconeBo.getByDate(query, userId, date);
     }
