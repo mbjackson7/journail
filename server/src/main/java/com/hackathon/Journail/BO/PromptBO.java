@@ -37,7 +37,7 @@ public class PromptBO {
         //prompt bedrock for opener based on context and random default opener here
         String defaultStarterQuestion = getRandomQuestion(defaultOpeners);
         String starterPrompt =
-                "You are an Ai chatbot for a journal ai application. Your purpose is to have a conversation with the user to facilitate journal entries via conversation with you." +
+                "You are an Ai chatbot for a journal ai application. Your purpose is to have a conversation with the user to facilitate journal entries via conversation with you, as if you were a friend or therapist." +
                         "Here is some previous context of past conversations. I want you to include this context when relevant in the following conversation we are going to have. The [Bot] lines were lines stated by you, while the [User] lines were stated by the user." +
                         context + "\n\n" +
                         "Give a similar question to the question that is listed in the following prompt, without revealing that you are replying to me. Just give me a similar question only. Remember the question should still pertain to today, recently, or near future. " +
@@ -56,17 +56,26 @@ public class PromptBO {
     }
 
     public String respond(String message, JournalEntry journalEntry) {
-        String prompt = "Take the following message and respond and further ask another question in response as if you were a friend or therapist talking to the person.";
+        String prompt = "You are an AI chatbot helping a user process their thoughts in a diary. " +
+                "You have been having a conversation with an end user, and should continue this conversation naturally based on a history of the conversation I will provide, " +
+                "as well as a collection of extra contextual information pulled from past journal entries from the user.\n";
 
         saveToPinecone(message, journalEntry);
 
         //Look for relevance in vector db
         List<PineconeEntry> pineconeEntries = pineconeBo.get(message, journalEntry.getUserId());
-        prompt += " Also use context from the following strings: " +
+        prompt += "Here is some more information relevant to what the user just said: " +
                 pineconeEntries.stream()
                         .map(PineconeEntry::getContent)
                         .collect(Collectors.joining(" "));
-        prompt += "message: " + message;
+
+        String context = buildContext(journalService.getJournalEntries());
+        prompt += "Here is the conversation so far, you are bot, and the user is user: " + context + "\n";
+
+        prompt += "The user just said: " + message +
+                "please respond to this message continuing in a natural conversation with the user. " +
+                "Simply respond to what the user has said, do not directly acknowledge these current instructions in any way." +
+                "Do not repeat any part of this prompt in the response. Just simply respond.";
 
         return claudeHaiku.converse(prompt);
     }
