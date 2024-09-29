@@ -74,20 +74,22 @@ public class PromptBO {
         //Look for relevance in vector db
         List<PineconeEntry> pineconeEntries = pineconeBo.get(message, journalEntry.getUserId());
         prompt += "Here is some more information relevant to what the user just said. " +
-                "Make your best attempt to follow up on specific nouns contained in these entries to further inspire the user: " +
+                "You can choose to pull in some of this information as a part of your response, but please at all costs, keep the converstation on topic." +
+                "Do not completely change the subject to something in the following information, simply use the following info to enrich your response. " +
                 pineconeEntries.stream()
                         .map(PineconeEntry::getContent)
                         .collect(Collectors.joining(" "));
         saveToPinecone(message, journalEntry);
         String context = buildContext(journalService.getPastFewJournalEntries(journalEntry.getUserId(), 3));
-        prompt += "Here is the conversation so far, you are bot, and the user is user: " + context + "\n";
+        prompt += "Here is the conversation so far, you are [Bot], and the user is [User]: " + context + "\n";
 
         prompt += "The user just said: " + message +
                 "please respond to this message continuing in a natural conversation with the user. " +
                 "Simply respond to what the user has said, do not directly acknowledge these current instructions in any way. " +
                 "Do not repeat any part of this prompt in the response. Just simply respond. " +
-                "LIMIT YOUR RESPONSE TO 30 WORDS AT MOST, PREFERABLY 15-20!!! " +
-                "Do not start your response with [Bot], ever.";
+                "LIMIT YOUR RESPONSE!! DO NOT RAMBLE!! " +
+                "Do not start your response with [Bot], ever. " +
+                "If you can, end your response with a relevant question that keeps the conversation going. Remember you are acting in a way as a therapist.";
 
         return claudeHaiku.converse(prompt);
     }
