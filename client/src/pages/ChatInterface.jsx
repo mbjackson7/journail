@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-
+import Conversation from "../components/Conversation";
 const ChatInterface = ({ userId, baseUrl }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -69,13 +69,14 @@ const ChatInterface = ({ userId, baseUrl }) => {
   };
 
   const endConversation = async () => {
+    setAllowInput(false);
+    setInput("");
     await fetch(`${baseUrl}/journals/end-conversation`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, time, message: input }),
     });
     setMessages([]);
-    setAllowInput(false);
   };
 
   useEffect(() => {
@@ -85,18 +86,7 @@ const ChatInterface = ({ userId, baseUrl }) => {
   return (
     <div className="flex flex-col h-full">
       <div className="p-4 pt-10 overflow-scroll">
-        {messages.map((msg, index) => (
-          <div key={index} className="mb-4">
-            {msg.user !== "" && (
-              <div className="text-black bg-custom1 p-2 rounded-3xl mb-2">
-                <strong>You:</strong> {msg.user}
-              </div>
-            )}
-            <div className="text-black bg-custom4 p-2 rounded-3xl">
-              <strong>JOURNaiL:</strong> {msg.bot}
-            </div>
-          </div>
-        ))}
+        <Conversation messages={messages}/>
         <div className="pb-20" ref={messagesEndRef} />
       </div>
       <div className="bg-back-dark p-4 fixed bottom-0 left-0 right-0">
