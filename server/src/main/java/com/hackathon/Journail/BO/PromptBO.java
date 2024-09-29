@@ -84,6 +84,7 @@ public class PromptBO {
         prompt += "\nHere are summaries of a few of the previous conversations with the user. BE VERY CAREFUL WITH THIS INFORMATION. " +
                 "Do not ever use this information to completely change the topic. Only use this information if the conversation naturally steers towards it. " +
                 "For example, never respond with something like: \"{response to user prompt}. {complete topic shift to old converstation topic].\" " +
+                "But if the conversation does go towards this direction, use some of this information in your response. " +
                 "Here are the summaries: " +
                 context;
 
@@ -100,24 +101,24 @@ public class PromptBO {
         return claudeHaiku.converse(prompt);
     }
 
-    public List<String> getFutureDates(String conversation) {
-        LocalDate currentDate = LocalDate.now();
-        DayOfWeek dayOfWeek = currentDate.getDayOfWeek();
-        String prompt = "Today is " + dayOfWeek + ", " + currentDate + ". Parse any mentions of dates out of the following text as json mappings (AND NO OTHER TEXT) between dates and events. If none are found, just return an empty string:\n" + conversation;
-
-        String response = claudeHaiku.converse(prompt);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            Map<String, Object> map = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
-            System.out.println(map);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        return new ArrayList<String>();
-    }
+//    public List<String> getFutureDates(String conversation) {
+//        LocalDate currentDate = LocalDate.now();
+//        DayOfWeek dayOfWeek = currentDate.getDayOfWeek();
+//        String prompt = "Today is " + dayOfWeek + ", " + currentDate + ". Parse any mentions of dates out of the following text as json mappings (AND NO OTHER TEXT) between dates and events. If none are found, just return an empty string:\n" + conversation;
+//
+//        String response = claudeHaiku.converse(prompt);
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        try {
+//            Map<String, Object> map = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
+//            System.out.println(map);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//        return new ArrayList<String>();
+//    }
 
     private List<String> getSampleQuestions(String sampleQuestionFile) {
         List<String> defaultQuestions = new ArrayList<>();
@@ -161,8 +162,9 @@ public class PromptBO {
     }
 
     private String getSummary(String conversation) {
-        String prompt = "Please summarize the following text so that it can be used for context later on in another prompt. Your answer needs to be short and concise."
-                + " This is the conversation: " + conversation;
+        String prompt = "Please summarize the following text so that it can be used for context later on in another prompt. " +
+                "Your answer needs to be short and concise."
+                + "In your response do not include anything other than the summary. This is the conversation: " + conversation;
         return claudeHaiku.converse(prompt);
     }
 
