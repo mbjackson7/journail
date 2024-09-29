@@ -1,6 +1,8 @@
 package com.hackathon.Journail.BO;
 
 import com.hackathon.Journail.Model.JournalEntry;
+import com.hackathon.Journail.Service.ClaudeHaiku;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Component
 public class PromptBO {
@@ -17,7 +20,10 @@ public class PromptBO {
         List<String> defaultOpeners = getSampleQuestions("sampleopeners.txt");
 
         //prompt bedrock for opener based on context and random default opener here
-        String starterQuestion = "HOW ARE YOUR BALLS TODAY?!?";
+        String defaultStarterQuestion = getRandomQuestion(defaultOpeners);
+        String starterPrompt = "Give me something similar to the following question: " + defaultStarterQuestion;
+
+        String starterQuestion = ClaudeHaiku.converse(starterPrompt);
 
         return starterQuestion;
     }
@@ -26,9 +32,9 @@ public class PromptBO {
         List<String> defaultClosers = getSampleQuestions("sampleclosingquestions.txt");
 
         //prompt bedrock for closer based on context and random default closer here
-        String closerQuestion = "WILL YOU PLEASE BRING ME GALAXY GAS NEXT TIME?!?!";
+        String defaultCloserQuestion = getRandomQuestion(defaultClosers);
 
-        return closerQuestion;
+        return defaultCloserQuestion;
     }
 
     private List<String> getSampleQuestions(String sampleQuestionFile) {
@@ -41,6 +47,17 @@ public class PromptBO {
         }
 
         return defaultQuestions;
+    }
+
+    private String getRandomQuestion(List<String> defaultQuestions) {
+        if (defaultQuestions.isEmpty()) {
+            throw new IllegalArgumentException("The list of strings cannot be empty.");
+        }
+
+        Random random = new Random();
+        int index = random.nextInt(defaultQuestions.size());
+
+        return defaultQuestions.get(index);
     }
 
 }
