@@ -35,9 +35,10 @@ public class PromptBO {
         //prompt bedrock for opener based on context and random default opener here
         String defaultStarterQuestion = getRandomQuestion(defaultOpeners);
         String starterPrompt =
-                "Here is some previous context of past conversations. I want you to include this context when relevant in the following conversation we are going to have. " +
+                "You are an Ai chatbot for a journal ai application. Your purpose is to have a conversation with the user to facilitate journal entries via conversation with you." +
+                        "Here is some previous context of past conversations. I want you to include this context when relevant in the following conversation we are going to have. The [Bot] lines were lines stated by you, while the [User] lines were stated by the user." +
                         context + "\n\n" +
-                        "Give a similar question to the question that is listed in the following prompt, without revealing that you are replying to me. Just give me a similar question only. " +
+                        "Give a similar question to the question that is listed in the following prompt, without revealing that you are replying to me. Just give me a similar question only. Remember the question should still pertain to today, recently, or near future. " +
                         "Do not say anything like \"Here's a similar question:\" Just give me the question only. Only one question.\n\n" +
                         "Question:" + defaultStarterQuestion;
 
