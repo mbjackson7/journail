@@ -30,7 +30,7 @@ public class PromptBO {
     public String getStarterQuestion(JournalEntry journalEntry) {
         List<String> defaultOpeners = getSampleQuestions("sampleopeners.txt");
 
-        String context = buildConext(journalService.getJournalEntries());
+        String context = buildContext(journalService.getJournalEntries());
 
         //prompt bedrock for opener based on context and random default opener here
         String defaultStarterQuestion = getRandomQuestion(defaultOpeners);
@@ -75,7 +75,7 @@ public class PromptBO {
         return defaultQuestions.get(index);
     }
 
-    private String buildConext(List<JournalEntry> journalEntries) {
+    private String buildContext(List<JournalEntry> journalEntries) {
         StringBuilder sb = new StringBuilder();
 
         for (JournalEntry journalEntry : journalEntries) {
