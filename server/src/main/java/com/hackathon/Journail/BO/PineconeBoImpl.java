@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public class PineconeBoImpl implements PineconeBo {
     private final String USER_ID = "userId";
     private final String DATE = "date";
+    private final double SIMILARITY_THRESHOLD = 0.9;
     private final VectorStore pineconeStore;
 
     public PineconeBoImpl(VectorStore pineconeStore) {
@@ -25,6 +26,7 @@ public class PineconeBoImpl implements PineconeBo {
         List<Document> results = pineconeStore.similaritySearch(
                 SearchRequest.defaults()
                         .withQuery(query)
+                        .withSimilarityThreshold(SIMILARITY_THRESHOLD)
                         .withFilterExpression(String.format("%s == '%s'", USER_ID, userId)));
 
         return results.stream().map(this::documentToEntry).collect(Collectors.toList());
@@ -35,6 +37,7 @@ public class PineconeBoImpl implements PineconeBo {
         List<Document> results = pineconeStore.similaritySearch(
                 SearchRequest.defaults()
                         .withQuery(query)
+                        .withSimilarityThreshold(SIMILARITY_THRESHOLD)
                         .withFilterExpression(String.format(
                                 "%s == '%s' && %s == '%s'",
                             USER_ID, userId, DATE, date)));
