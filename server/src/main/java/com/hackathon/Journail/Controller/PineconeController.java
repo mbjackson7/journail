@@ -1,11 +1,13 @@
 package com.hackathon.Journail.Controller;
 
 import com.hackathon.Journail.BO.PineconeBo;
+import com.hackathon.Journail.BO.PineconeEntry;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/embed")
 public class PineconeController {
 
     private final PineconeBo pineconeBo;
@@ -15,12 +17,17 @@ public class PineconeController {
     }
 
     @PostMapping("/save-vector")
-    public void saveToVectorStore(@RequestBody String textToEmbed, @RequestParam("userId") String userId) {
-        pineconeBo.save(textToEmbed, userId);
+    public void saveToVectorStore(@RequestBody PineconeEntry newEntry) {
+        pineconeBo.save(newEntry);
     }
 
     @GetMapping("/check-vector")
-    public List<String> checkVectorStore(@RequestBody String query, @RequestParam("userId") String userId) {
+    public List<PineconeEntry> checkVectorStore(@RequestBody String query, @RequestParam("userId") String userId) {
         return pineconeBo.get(query, userId);
+    }
+
+    @GetMapping("/check-vector-by-date")
+    public List<PineconeEntry> checkVectorStoreByDate(@RequestBody String query, @RequestParam("userId") String userId, @RequestParam("date") String date) {
+        return pineconeBo.getByDate(query, userId, date);
     }
 }
