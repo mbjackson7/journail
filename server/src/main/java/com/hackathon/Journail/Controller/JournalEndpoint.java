@@ -87,6 +87,7 @@ public class JournalEndpoint {
         journalEntry.setTime(journalDTO.getTime());
         journalService.createJournalEntry(journalEntry);
         //TODO: Service call to get starter question
+        String starterQuestion = promptBO.getStarterQuestion(journalEntry);
 
         return ResponseEntity.status(HttpStatus.OK).body("How was your day?");
 
