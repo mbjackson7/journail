@@ -18,13 +18,11 @@ public class JournalEndpoint {
 
     private final JournalService journalService;
     private final PromptBO promptBO;
-    private HttpHeaders headers = new HttpHeaders();
 
     @Autowired
     public JournalEndpoint(JournalService journalService, PromptBO promptBO) {
         this.journalService = journalService;
         this.promptBO = promptBO;
-        headers.add("Access-Control-Allow-Origin", "*");
     }
 
     @GetMapping()
