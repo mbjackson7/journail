@@ -69,7 +69,7 @@ public class PromptBO {
                         .map(PineconeEntry::getContent)
                         .collect(Collectors.joining(" "));
 
-        String context = buildContext(journalService.getJournalEntries());
+        String context = buildContext(journalService.getPastFewJournalEntries(journalEntry.getUserId(), 3));
         prompt += "Here is the conversation so far, you are bot, and the user is user: " + context + "\n";
 
         prompt += "The user just said: " + message +
