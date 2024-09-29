@@ -17,4 +17,6 @@ public interface JournalService {
 
     JournalEntry getJournalEntry(String userId, String time);
 
+    List<JournalEntry> getPastFewJournalEntries(String userId, int amount);
+
 }
