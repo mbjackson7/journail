@@ -1,4 +1,4 @@
-package com.hackathon.Journail.Service;
+package com.hackathon.Journail.Service.Journal;
 import com.hackathon.Journail.Model.JournalEntry;
 import com.hackathon.Journail.Repository.JournalEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class JournalServiceImpl implements JournalService{
+public class JournalServiceImpl implements JournalService {
 
     private final JournalEntryRepository journalEntryRepository;
 

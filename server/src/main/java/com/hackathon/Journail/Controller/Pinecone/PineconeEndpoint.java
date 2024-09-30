@@ -1,7 +1,7 @@
-package com.hackathon.Journail.Controller;
+package com.hackathon.Journail.Controller.Pinecone;
 
-import com.hackathon.Journail.BO.PineconeBo;
-import com.hackathon.Journail.BO.PineconeEntry;
+import com.hackathon.Journail.Service.Pinecone.PineconeService;
+import com.hackathon.Journail.Model.PineconeEntry;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,11 +12,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/embed")
-public class PineconeController {
+public class PineconeEndpoint {
 
-    private final PineconeBo pineconeBo;
+    private final PineconeService pineconeBo;
 
-    public PineconeController(PineconeBo pineconeBo) {
+    public PineconeEndpoint(PineconeService pineconeBo) {
         this.pineconeBo = pineconeBo;
     }
 
