@@ -1,38 +1,34 @@
-package com.hackathon.Journail.BO;
+package com.hackathon.Journail.Bo;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hackathon.Journail.Service.Journal.JournalService;
+import com.hackathon.Journail.Service.Pinecone.PineconeService;
 import com.hackathon.Journail.Model.JournalEntry;
-import com.hackathon.Journail.Service.ClaudeHaiku;
-import com.hackathon.Journail.Service.JournalServiceImpl;
+import com.hackathon.Journail.Model.PineconeEntry;
+import com.hackathon.Journail.Service.Claude.ClaudeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 @Component
 public class PromptBO {
 
-    private final ClaudeHaiku claudeHaiku;
-    private final JournalServiceImpl journalService;
-    private final PineconeBo pineconeBo;
+    private final ClaudeService claudeService;
+    private final JournalService journalService;
+    private final PineconeService pineconeService;
 
     @Autowired
-    PromptBO(ClaudeHaiku claudeHaiku, JournalServiceImpl journalService, PineconeBo pineconeBo) {
-        this.claudeHaiku = claudeHaiku;
+    PromptBO(ClaudeService claudeService, JournalService journalService, PineconeService pineconeService) {
+        this.claudeService = claudeService;
         this.journalService = journalService;
-        this.pineconeBo = pineconeBo;
+        this.pineconeService = pineconeService;
     }
 
     public String getStarterQuestion(JournalEntry journalEntry) {
@@ -50,7 +46,7 @@ public class PromptBO {
                         "Do not say anything like \"Here's a similar question:\" Just give me the question only. Only one question.\n\n" +
                         "Question:" + defaultStarterQuestion;
 
-        return claudeHaiku.converse(starterPrompt);
+        return claudeService.converse(starterPrompt);
     }
 
     public String getCloserQuestion(JournalEntry journalEntry) {
@@ -72,7 +68,7 @@ public class PromptBO {
                 "as well as a collection of extra contextual information pulled from past journal entries from the user.\n";
 
         //Look for relevance in vector db
-        List<PineconeEntry> pineconeEntries = pineconeBo.get(message, journalEntry.getUserId());
+        List<PineconeEntry> pineconeEntries = pineconeService.get(message, journalEntry.getUserId());
         prompt += "Here is some more information relevant to what the user just said. " +
                 "You can choose to pull in some of this information as a part of your response, but please at all costs, keep the converstation on topic." +
                 "Do not completely change the subject to something in the following information, simply use the following info to enrich your response. " +
@@ -98,27 +94,8 @@ public class PromptBO {
                 "Do not start your response with [Bot], ever. " +
                 "If you can, end your response with a relevant question that keeps the conversation going. Remember you are acting in a way as a therapist.";
 
-        return claudeHaiku.converse(prompt);
+        return claudeService.converse(prompt);
     }
-
-//    public List<String> getFutureDates(String conversation) {
-//        LocalDate currentDate = LocalDate.now();
-//        DayOfWeek dayOfWeek = currentDate.getDayOfWeek();
-//        String prompt = "Today is " + dayOfWeek + ", " + currentDate + ". Parse any mentions of dates out of the following text as json mappings (AND NO OTHER TEXT) between dates and events. If none are found, just return an empty string:\n" + conversation;
-//
-//        String response = claudeHaiku.converse(prompt);
-//
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        try {
-//            Map<String, Object> map = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
-//            System.out.println(map);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//        return new ArrayList<String>();
-//    }
 
     private List<String> getSampleQuestions(String sampleQuestionFile) {
         List<String> defaultQuestions = new ArrayList<>();
@@ -158,14 +135,13 @@ public class PromptBO {
         pineconeEntry.setUserId(journalEntry.getUserId());
         pineconeEntry.setDate(journalEntry.getTime());
         pineconeEntry.setContent(message);
-        pineconeBo.save(pineconeEntry);
+        pineconeService.save(pineconeEntry);
     }
 
     private String getSummary(String conversation) {
         String prompt = "Please summarize the following text so that it can be used for context later on in another prompt. " +
                 "Your answer needs to be short and concise."
                 + "In your response do not include anything other than the summary. This is the conversation: " + conversation;
-        return claudeHaiku.converse(prompt);
+        return claudeService.converse(prompt);
     }
-
 }

@@ -1,22 +1,25 @@
-package com.hackathon.Journail.BO;
+package com.hackathon.Journail.Service.Pinecone;
 
+import com.hackathon.Journail.Model.PineconeEntry;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
-public class PineconeBoImpl implements PineconeBo {
+@Service
+public class PineconeServiceImpl implements PineconeService {
     private final String USER_ID = "userId";
     private final String DATE = "date";
     private final double SIMILARITY_THRESHOLD = 0.4;
     private final VectorStore pineconeStore;
 
-    public PineconeBoImpl(VectorStore pineconeStore) {
+    @Autowired
+    public PineconeServiceImpl(VectorStore pineconeStore) {
         this.pineconeStore = pineconeStore;
     }
 

@@ -1,11 +1,10 @@
-package com.hackathon.Journail.Controller;
+package com.hackathon.Journail.Controller.Journal;
 
 
-import com.hackathon.Journail.BO.PromptBO;
+import com.hackathon.Journail.Bo.PromptBO;
 import com.hackathon.Journail.Model.JournalEntry;
-import com.hackathon.Journail.Service.JournalService;
+import com.hackathon.Journail.Service.Journal.JournalService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -104,7 +103,6 @@ public class JournalEndpoint {
         existingEntry.appendConversation("[User] " + journalDTO.getMessage());
         existingEntry.appendConversation("[Bot] " + botMessage);
         journalService.updateJournalEntry(existingEntry);
-        //CALL INTO BO LOGIC HERE
         return ResponseEntity.status(HttpStatus.OK).body(botMessage);
     }
 
@@ -121,8 +119,6 @@ public class JournalEndpoint {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Journal Entry does not exist. Have you called start-conversation yet?");
         }
 
-
-        // CALL INTO BO LOGIC HERE
         String closerQuestion = promptBO.getCloserQuestion(existingEntry);
         existingEntry.appendConversation("[BOT] " + closerQuestion);
         journalService.updateJournalEntry(existingEntry);
@@ -146,10 +142,7 @@ public class JournalEndpoint {
 
         journalEntry.appendConversation("[User] " + journalDTO.getMessage());
         journalService.updateJournalEntry(journalEntry);
-
         promptBO.createSummary(journalEntry);
-
-        // CALL INTO BO LOGIC HERE>
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }

@@ -1,4 +1,4 @@
-package com.hackathon.Journail.Service;
+package com.hackathon.Journail.Service.Journal;
 
 import com.hackathon.Journail.Model.JournalEntry;
 import java.util.List;

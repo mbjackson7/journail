@@ -1,4 +1,4 @@
-package com.hackathon.Journail.Controller;
+package com.hackathon.Journail.Controller.Journal;
 
 import java.util.Objects;
 

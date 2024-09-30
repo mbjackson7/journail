@@ -1,4 +1,4 @@
-package com.hackathon.Journail.BO;
+package com.hackathon.Journail.Model;
 
 public class PineconeEntry {
     private String userId;
